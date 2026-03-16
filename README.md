@@ -1,50 +1,86 @@
-# The Door Detective: AI-Powered Privacy-First Entry System
+# Door Detective: Privacy-First Ambient Entry System
 
-## 1. Project Overview
-**Concept:**
-The Door Detective is a smart home device designed to act as a digital doorman without invasive cameras. It uses Edge AI to analyze vibration patterns on the door surface. The system identifies whether a visitor is a delivery driver (rapid knocking), a friend (rhythmic knocking), or a stranger, and visualizes this information on a physical desktop gauge.
+> **"A smart doorbell that hears the rhythm, not the person."**
 
-**Physical Appearance:**
-<img width="2360" height="1640" alt="c760b10d5f016d36a55d5775de6cfd0e" src="https://github.com/user-attachments/assets/aaaf9f5a-b542-4232-9d14-f87642a66cb3" />
+**Door Detective** is a "Calm Technology" smart home solution designed to replace invasive cameras and distracting phone notifications. By using acoustic vibration sensing and temporal pattern analysis, it identifies visitors based on their knocking rhythm and provides a physical, non-intrusive notification on a desktop gauge.
+
+---
+
+## 📸 Hero Shot
+<img width="1792" height="889" alt="image" src="https://github.com/user-attachments/assets/c248c865-c55e-4254-b272-8bc9a3410a2c" />
 
 
 ---
 
-## 2. Sensing Device (The "Ear")
-**Description:**
-The sensing node is a compact, wireless box attached to the back of the door. It remains in "Deep Sleep" mode to conserve battery and wakes up only when vibration is detected.
-*   **How it works:** The accelerometer captures the vibration waveform of a knock. The ESP32 processor extracts features (amplitude, frequency) and classifies the pattern locally.
-*   **Key Components:**
-    *   **Processor:** Espressif **ESP32-WROOM-32E** (Microcontroller with Wi-Fi/BLE)
-    *   **Sensor:** STMicroelectronics **LIS3DH** (3-Axis Accelerometer for vibration sensing)
-    *   **Power:** 3.7V LiPo Battery (1000mAh)
-
-**Detailed Device Sketch:**
-<img width="1545" height="1446" alt="image" src="https://github.com/user-attachments/assets/c389b4a8-957d-40b3-9d0d-3a275fa005bb" />
-
+## 💡 Core Concept
+Most smart doorbells compromise domestic privacy by recording video and demanding constant attention through push notifications. 
+**Door Detective solves this by:**
+1. **Privacy-Preserving Sensing**: Using an accelerometer instead of a camera.
+2. **Ambient Notification**: Using a physical needle and an analog gauge for "at-a-glance" awareness.
+3. **Edge Intelligence**: Classifying visitors locally using vibration signatures.
 
 ---
 
-## 3. Display Device (The "Face")
-**Description:**
-The display unit sits on the user's desk. Instead of a screen that demands attention, it uses a calm technology approach. A stepper motor rotates a needle to specific zones on a dial indicating "Delivery", "Friend", or "Unknown".
-*   **How it works:** It receives the classification result via ESP-NOW wireless protocol. The ESP32 sends pulses to the motor driver to move the needle to the correct angle.
-*   **Key Components:**
-    *   **Processor:** Espressif **ESP32-WROOM-32E**
-    *   **Actuator:** **28BYJ-48** Stepper Motor (5V)
-    *   **Driver:** **ULN2003** Motor Driver Board
-    *   **Power:** USB-C Connection (5V)
+## 🛠 System Architecture
+The system consists of two nodes communicating via the **ESP-NOW** protocol for ultra-low latency (<100ms) without the need for a router.
 
-**Detailed Device Sketch:**
-<img width="2360" height="1640" alt="51a810417ec6cd5773d7152131d298b4" src="https://github.com/user-attachments/assets/9e883fdb-1d0f-4c39-b4a2-c3b83afc45f5" />
-
+*   **Sensing Node (The "Ear")**: Mounted on the door. It captures high-frequency vibration data using an LIS3DH sensor and processes it on an ESP32 DevKit.
+*   **Display Node (The "Face")**: Sits on the desk. A Seeed Studio XIAO ESP32C3 receives signals and actuates an X27 stepper motor to move the needle.
 
 ---
 
-## 4. System Architecture
-**Figure 1: Communication Diagram**
-<img width="1615" height="510" alt="image" src="https://github.com/user-attachments/assets/e4b41ce3-3df2-48b1-954d-6bc9df861718" />
+## 📟 Hardware Specifications
 
+| Component | Category | Details |
+| :--- | :--- | :--- |
+| **MCU 1** | Sensing | ESP32 DevKit V1 |
+| **MCU 2** | Display | Seeed Studio XIAO ESP32C3 |
+| **Sensor** | Vibration | Adafruit LIS3DH (3-Axis Accelerometer) |
+| **Actuator** | Motor | X27.168 Bipolar Stepper Motor |
+| **Power** | Battery | 3.7V 1000mAh LiPo (Sensing Node) |
+| **Interface** | Button | 16mm Latching Push Button |
+| **Enclosure** | Manufacturing | Custom 3D-printed (Fusion 360) |
 
-**Figure 2: Data Flow Diagram**
-<img width="1723" height="724" alt="image" src="https://github.com/user-attachments/assets/8e69eac6-f36a-4863-b43a-2a711af7b1f6" />
+---
+
+## 🧠 Software & DSP Algorithm
+To fulfill the machine learning/DSP requirements, I developed a **Temporal Feature Extraction** pipeline:
+
+1. **Signal Magnitude Vector (SMV)**: Combines X, Y, and Z axes to normalize energy readings regardless of sensor orientation.
+2. **Inter-Knock Interval (IKI) Analysis**: Measures the time between peaks to classify intent:
+    *   **Urgent (Delivery)**: IKI < 500ms (Rapid double-tap) ➜ Needle points Left.
+    *   **Social (Friend)**: IKI 500-1200ms (Rhythmic knock) ➜ Needle points Right.
+    *   **General (Guest)**: Single tap / Timeout ➜ Needle points Center.
+
+**Accuracy**: ~85% during internal validation testing.
+
+---
+
+## 🔄 Hardware Iteration & Lessons Learned
+This project was a journey of engineering resilience.
+*   **PCB Rev 1.0 Fail**: A footprint pitch mismatch caused the ESP32 headers to be too narrow.
+*   **Scrappy Prototyping**: Instead of waiting for a re-milling, I pivoted to a fly-wire assembly strategy to validate the I2C bus and electrical logic.
+*   **Final Revision**: The sensing node now features a custom single-sided PCB with integrated pull-up resistors and optimized power traces.
+
+---
+
+## 🔋 Power Management
+*   **Strategy**: Implemented a software-based **Timed Light Sleep** mode (50ms cycles).
+*   **Performance**: Reduced average idle current from 80mA to ~15mA, allowing the 1000mAh battery to last through long periods of monitoring.
+*   **Future Work**: Routing the LIS3DH interrupt pin to enable true hardware Deep Sleep (uA levels).
+
+---
+
+## 📁 Repository Structure
+*   `/src`: Firmware for both Sensing and Display nodes.
+*   `/hardware`: KiCad schematics, PCB layout, and Gerber files.
+*   `/cad`: Fusion 360 3D models (.f3d and .step).
+*   `/docs`: Datasheets, Power calculation spreadsheet, and FMEA report.
+
+---
+
+## 👤 Author
+**Yuna Xiong**
+Technology Innovation (MSTI) Graduate Student at the University of Washington.
+
+---
