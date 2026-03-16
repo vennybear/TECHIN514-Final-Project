@@ -6,13 +6,13 @@
 
 ---
 
-## 📸 Hero Shot
+## Hero Shot
 <img width="1792" height="889" alt="image" src="https://github.com/user-attachments/assets/c248c865-c55e-4254-b272-8bc9a3410a2c" />
 
 
 ---
 
-## 💡 Core Concept
+## Core Concept
 Most smart doorbells compromise domestic privacy by recording video and demanding constant attention through push notifications. 
 **Door Detective solves this by:**
 1. **Privacy-Preserving Sensing**: Using an accelerometer instead of a camera.
@@ -21,7 +21,7 @@ Most smart doorbells compromise domestic privacy by recording video and demandin
 
 ---
 
-## 🛠 System Architecture
+## System Architecture
 The system consists of two nodes communicating via the **ESP-NOW** protocol for ultra-low latency (<100ms) without the need for a router.
 
 *   **Sensing Node (The "Ear")**: Mounted on the door. It captures high-frequency vibration data using an LIS3DH sensor and processes it on an ESP32 DevKit.
@@ -29,7 +29,7 @@ The system consists of two nodes communicating via the **ESP-NOW** protocol for 
 
 ---
 
-## 📟 Hardware Specifications
+## Hardware Specifications
 
 | Component | Category | Details |
 | :--- | :--- | :--- |
@@ -43,7 +43,7 @@ The system consists of two nodes communicating via the **ESP-NOW** protocol for 
 
 ---
 
-## 🧠 Software & DSP Algorithm
+## Software & DSP Algorithm
 To fulfill the machine learning/DSP requirements, I developed a **Temporal Feature Extraction** pipeline:
 
 1. **Signal Magnitude Vector (SMV)**: Combines X, Y, and Z axes to normalize energy readings regardless of sensor orientation.
@@ -56,7 +56,7 @@ To fulfill the machine learning/DSP requirements, I developed a **Temporal Featu
 
 ---
 
-## 🔄 Hardware Iteration & Lessons Learned
+## Hardware Iteration & Lessons Learned
 This project was a journey of engineering resilience.
 *   **PCB Rev 1.0 Fail**: A footprint pitch mismatch caused the ESP32 headers to be too narrow.
 *   **Scrappy Prototyping**: Instead of waiting for a re-milling, I pivoted to a fly-wire assembly strategy to validate the I2C bus and electrical logic.
@@ -64,14 +64,14 @@ This project was a journey of engineering resilience.
 
 ---
 
-## 🔋 Power Management
+## Power Management
 *   **Strategy**: Implemented a software-based **Timed Light Sleep** mode (50ms cycles).
 *   **Performance**: Reduced average idle current from 80mA to ~15mA, allowing the 1000mAh battery to last through long periods of monitoring.
 *   **Future Work**: Routing the LIS3DH interrupt pin to enable true hardware Deep Sleep (uA levels).
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 *   `/src`: Firmware for both Sensing and Display nodes.
 *   `/hardware`: KiCad schematics, PCB layout, and Gerber files.
 *   `/cad`: Fusion 360 3D models (.f3d and .step).
@@ -79,7 +79,7 @@ This project was a journey of engineering resilience.
 
 ---
 
-## 👤 Author
+## Author
 **Yuna Xiong**
 Technology Innovation (MSTI) Graduate Student at the University of Washington.
 
