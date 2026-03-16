@@ -1,0 +1,9 @@
+Item,Quantity,Part Number / Model,Description,Manufacturer,Package
+1,1,ESP32-WROOM-32E,Main Controller (Sensing Node),Espressif,DevKit V1
+2,1,XIAO ESP32C3,Main Controller (Display Node),Seeed Studio,Module
+3,1,Adafruit LIS3DH,3-Axis Accelerometer,Adafruit,Breakout
+4,1,X27.168,Bipolar Stepper Motor,Generic / Lab,Motor
+5,2,4.7k Ω,I2C Pull-up Resistors,Generic,SMD 0805
+6,1,PL 503450,LiPo Battery 3.7V 1000mAh,Generic,Pouch
+7,1,16mm Latching Button,Manual Reset Switch,Generic,Panel Mount
+8,1,5mm LED + 220Ω Resistor,Status Indicator,Generic,Through-hole
